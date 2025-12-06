@@ -36,6 +36,7 @@ type AnimatedSceneProps = {
   cards: ReadonlyArray<BirthdayCardConfig>;
   activeCardId: string | null;
   onToggleCard: (id: string) => void;
+  onImageClick: (image: string) => void;
 };
 
 const CAKE_START_Y = 10;
@@ -83,9 +84,9 @@ const TYPED_LINES = [
   "...",
   "> so i made you this stupid lil computer program",
   "...",
-  "٩(◕‿◕)۶ ٩(◕‿◕)۶ ٩(◕‿◕)۶"
+  "......................٩(◕‿◕)۶ ٩(◕‿◕)۶ ٩(◕‿◕)۶......................"
 ];
-const TYPED_CHAR_DELAY = 100;
+const TYPED_CHAR_DELAY = 180;
 const POST_TYPING_SCENE_DELAY = 1000;
 const CURSOR_BLINK_INTERVAL = 480;
 
@@ -101,7 +102,7 @@ const BIRTHDAY_CARDS: ReadonlyArray<BirthdayCardConfig> = [
     id: "confetti",
     image: "/card.png",
     position: [1, 0.081, -2],
-    rotation: [-Math.PI / 2 , 0, Math.PI / 3],
+    rotation: [-Math.PI / 2, 0, Math.PI / 3],
   }
 ];
 
@@ -114,6 +115,7 @@ function AnimatedScene({
   cards,
   activeCardId,
   onToggleCard,
+  onImageClick,
 }: AnimatedSceneProps) {
   const cakeGroup = useRef<Group>(null);
   const tableGroup = useRef<Group>(null);
@@ -270,24 +272,28 @@ function AnimatedScene({
           position={[0, 0.735, 3]}
           rotation={[0, 5.6, 0]}
           scale={0.75}
+          onClick={() => onImageClick("/frame2.jpg")}
         />
         <PictureFrame
           image="/frame3.jpg"
           position={[0, 0.735, -3]}
           rotation={[0, 4.0, 0]}
           scale={0.75}
+          onClick={() => onImageClick("/frame3.jpg")}
         />
         <PictureFrame
           image="/frame4.jpg"
           position={[-1.5, 0.735, 2.5]}
           rotation={[0, 5.4, 0]}
           scale={0.75}
+          onClick={() => onImageClick("/frame4.jpg")}
         />
         <PictureFrame
           image="/frame1.jpg"
           position={[-1.5, 0.735, -2.5]}
           rotation={[0, 4.2, 0]}
           scale={0.75}
+          onClick={() => onImageClick("/frame1.jpg")}
         />
         {cards.map((card) => (
           <BirthdayCard
@@ -378,6 +384,7 @@ export default function App() {
   const [isCandleLit, setIsCandleLit] = useState(true);
   const [fireworksActive, setFireworksActive] = useState(false);
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
   const backgroundAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -511,6 +518,14 @@ export default function App() {
     setActiveCardId((current) => (current === id ? null : id));
   }, []);
 
+  const handleImageClick = useCallback((image: string) => {
+    setActiveImage(image);
+  }, []);
+
+  const closeOverlay = useCallback(() => {
+    setActiveImage(null);
+  }, []);
+
   const isScenePlaying = hasStarted && sceneStarted;
 
   return (
@@ -538,6 +553,11 @@ export default function App() {
           })}
         </div>
       </div>
+      {activeImage && (
+        <div className="image-overlay" onClick={closeOverlay}>
+          <img src={activeImage} alt="Full size memory" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
       {hasAnimationCompleted && isCandleLit && (
         <div className="hint-overlay">press space to blow out the candle</div>
       )}
@@ -558,9 +578,10 @@ export default function App() {
             cards={BIRTHDAY_CARDS}
             activeCardId={activeCardId}
             onToggleCard={handleCardToggle}
+            onImageClick={handleImageClick}
           />
           <ambientLight intensity={(1 - environmentProgress) * 0.8} />
-          <directionalLight intensity={0.5} position={[2, 10, 0]} color={[1, 0.9, 0.95]}/>
+          <directionalLight intensity={0.5} position={[2, 10, 0]} color={[1, 0.9, 0.95]} />
           <Environment
             files={["/shanghai_bund_4k.hdr"]}
             backgroundRotation={[0, 3.3, 0]}

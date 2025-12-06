@@ -1,6 +1,6 @@
 import { useLoader } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -27,11 +27,20 @@ export function PictureFrame({
   imageOffset,
   imageInset = 0.01,
   children,
+  onClick,
   ...groupProps
-}: PictureFrameProps) {
+}: PictureFrameProps & { onClick?: () => void }) {
   const { gl } = useThree();
   const gltf = useLoader(GLTFLoader, "/picture_frame.glb");
   const pictureTexture = useTexture(image);
+  const [hovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    document.body.style.cursor = hovered ? "pointer" : "auto";
+    return () => {
+      document.body.style.cursor = "auto";
+    };
+  }, [hovered]);
 
   pictureTexture.colorSpace = SRGBColorSpace;
   const maxAnisotropy =
@@ -93,13 +102,27 @@ export function PictureFrame({
   }, [pictureMaterial]);
 
   return (
-    <group {...groupProps}>
+    <group
+      {...groupProps}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+      }}
+      onPointerOut={(e) => {
+        e.stopPropagation();
+        setHovered(false);
+      }}
+    >
       <group rotation={[0.04, 0, 0]}>
-      <primitive object={frameScene} />
-      <mesh position={imagePosition} rotation={[0.435, Math.PI, 0]} material={pictureMaterial}>
-        <planeGeometry args={[imageWidth, imageHeight]} />
-      </mesh>
-      {children}
+        <primitive object={frameScene} />
+        <mesh position={imagePosition} rotation={[0.435, Math.PI, 0]} material={pictureMaterial}>
+          <planeGeometry args={[imageWidth, imageHeight]} />
+        </mesh>
+        {children}
       </group>
     </group>
   );

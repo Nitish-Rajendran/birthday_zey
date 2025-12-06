@@ -14,7 +14,7 @@ type FireworksProps = {
   origin?: [number, number, number];
 };
 
-const FIREWORK_COUNT = 1000;
+const FIREWORK_COUNT = 200;
 const PARTICLES_PER_FIREWORK = 10;
 const TOTAL_PARTICLES = FIREWORK_COUNT * PARTICLES_PER_FIREWORK;
 const GRAVITY = -4;
@@ -74,7 +74,7 @@ export function Fireworks({ isActive, origin = [0, 5, -14] }: FireworksProps) {
     origins[baseIndex + 2] = burstOrigin.z;
 
     const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(Math.random() * 2 - 1)* 0.9;
+    const phi = Math.acos(Math.random() * 2 - 1) * 0.9;
     const speed = 1 + Math.random() * 1.4;
 
     velocities[baseIndex] = Math.sin(phi) * Math.cos(theta) * speed;
