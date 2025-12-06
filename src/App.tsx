@@ -530,8 +530,20 @@ export default function App() {
 
   const isScenePlaying = hasStarted && sceneStarted;
 
+  const handleTouchStart = useCallback(() => {
+    if (!hasStarted) {
+      playBackgroundMusic();
+      setHasStarted(true);
+      return;
+    }
+    if (hasAnimationCompleted && isCandleLit) {
+      setIsCandleLit(false);
+      setFireworksActive(true);
+    }
+  }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
+
   return (
-    <div className="App">
+    <div className="App" onClick={handleTouchStart}>
       <div
         className="background-overlay"
         style={{ opacity: backgroundOpacity }}
