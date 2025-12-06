@@ -14,7 +14,7 @@ type FireworksProps = {
   origin?: [number, number, number];
 };
 
-const FIREWORK_COUNT = 100;
+const FIREWORK_COUNT = 1000;
 const PARTICLES_PER_FIREWORK = 10;
 const TOTAL_PARTICLES = FIREWORK_COUNT * PARTICLES_PER_FIREWORK;
 const GRAVITY = -4;
