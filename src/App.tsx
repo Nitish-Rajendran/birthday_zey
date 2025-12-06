@@ -82,9 +82,11 @@ const TYPED_LINES = [
   "...",
   "> this is your birthday",
   "...",
-  "> so i made you this stupid lil computer program",
+  "> so I made you this stupid lil' computer program",
   "...",
-  "......................٩(◕‿◕)۶ ٩(◕‿◕)۶ ٩(◕‿◕)۶......................"
+  "> hope you like it",
+  "...",
+  "> ٩(◕‿◕)۶ ٩(◕‿◕)۶ ٩(◕‿◕)۶"
 ];
 const TYPED_CHAR_DELAY = 180;
 const POST_TYPING_SCENE_DELAY = 1000;
